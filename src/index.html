@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Image Compress</title>
+	<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+	<div class="app">
+
+		<header>
+			<p>Iamge Compress</p>
+			<div class="handle">
+				<button title="设置" @click="settingShow = true">
+					<div class="icon icon-setting">
+						<span></span>
+						<span></span>
+						<span></span>
+					</div>
+				</button>
+				<button title="最小化" @click="minWindow">
+					<div class="icon icon-min"></div>
+				</button>
+				<button title="关闭" @click="closeWindow">
+					<div class="icon icon-close">
+						<span></span>
+						<span></span>
+					</div>
+				</button>
+			</div>
+		</header>
+
+
+		<transition name="fade">
+			<div class="setting" v-show="settingShow">
+				<div class="inner">
+					<div class="block">
+						<div class="form-item">
+							<label>存储位置</label>
+							<button @click="openDialog">{{savePath}}</button>
+							<div class="tip">设置图片存储位置</div>
+						</div>
+						<div class="form-item">
+							<label>jpg最大字节</label>
+							<input type="number" v-model="size" />
+							<p class="unit">kb</p>
+							<div class="tip">设置最大文件大小，即压缩后的文件大小不超过此数值</div>
+						</div>
+						<div class="form-item">
+							<label>png压缩质量</label>
+							<div class="quality-range">
+								<range :value.sync="quality1" max="100"></range>
+								<range :value.sync="quality2" max="100"></range>
+								<div class="line"></div>
+							</div>
+							<div class="tip">设置压缩png图片的质量范围</div>
+						</div>
+						<div class="form-item">
+							<label>png压缩速度</label>
+							<range :value.sync="speed" max="10"></range>
+							<div class="tip">速度/质量的权值，默认为3，当其值为10时，会获得默认值8倍的速度提升，但是会损失5%左右的质量</div>
+						</div>
+					</div>
+					<div class="btns">
+						<button @click="saveSetting">保存</button>
+						<button @click="settingShow = false">关闭</button>
+					</div>
+				</div>
+			</div>
+		</transition>
+
+		
+
+		<div class="main">
+				{{quality1}}-{{quality2}}
+
+			<div class="introduce">
+				<h1 class="c-blue">Image
+					<span class="c-pink">Compress</span>
+				</h1>
+				<p class="c-blue">独特且强悍的JavaScript算法，能极速压缩80%的图片大小，而不损害其质量</p>
+				<p class="c-pink">Image Compress是一个图片压缩工具，基于electron，支持批量压缩，不需要后端服务器或者API的支持，使用本地实现。</p>
+			</div>
+
+			<div class="list scroll" v-show="list.length > 0">
+				<div v-for="item in list" class="item">
+					<div class="img">
+						<img :src="item.path" />
+					</div>
+					<p class="path">{{item.path}}</p>
+					<p class="size">{{item.size}}</p>
+				</div>
+			</div>
+
+			<div id="dragArea" class="drag" v-show="list.length == 0">
+				<p>请将文件或文件夹拖动到窗口</p>
+			</div>
+
+			<div class="compare">
+				<div class="separator">
+					<span class="left-arr"></span>
+					<span class="right-arr"></span>
+				</div>
+				<div class="img-box img-original" id="img_original">
+					<span>原始: 961KB</span>
+					<img src="img/photographer.jpg" alt="woman taking a photo" id="before">
+				</div>
+				<div class="img-box img-compressed" id="img_compressed">
+					<span>压缩: 147KB</span>
+					<img src="img/photographer_compressed.jpg" alt="woman taking a photo" id="after">
+				</div>
+			</div>
+
+			<div class="process">
+				<div class="bar bar_blue"></div>
+				<div class="txt">压缩:
+					<span>147KB</span> (
+					<span>85%</span> 减小体积)</div>
+			</div>
+			<div class="process">
+				<div class="bar bar_pink"></div>
+				<div class="txt">原始:
+					<span>961KB</span>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<!-- range component -->
+	<script type="text/x-template" id="range">
+		<div class="range" ref="elRange">
+			<div class="track"></div>
+			<div :class="{'thumb':true,'focus':focus}" ref="elThumb" @mousedown="isMouseDown = true,focus = true" >
+				<span>{{value}}</span>
+			</div>
+		</div>
+	</script>
+
+
+	<script type="text/javascript">
+		require("./js/index.js")
+	</script>
+</body>
+
+</html>
