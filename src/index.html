@@ -64,7 +64,7 @@
 							<div class="tip">速度/质量的权值，默认为3，当其值为10时，会获得默认值8倍的速度提升，但是会损失5%左右的质量</div>
 						</div>
 					</div>
-					<div class="btns">
+					<div class="btn-wrap">
 						<button @click="saveSetting">保存</button>
 						<button @click="settingShow = false">关闭</button>
 					</div>
@@ -75,7 +75,6 @@
 		
 
 		<div class="main">
-				{{quality1}}-{{quality2}}
 
 			<div class="introduce">
 				<h1 class="c-blue">Image
@@ -85,17 +84,32 @@
 				<p class="c-pink">Image Compress是一个图片压缩工具，基于electron，支持批量压缩，不需要后端服务器或者API的支持，使用本地实现。</p>
 			</div>
 
-			<div class="list scroll" v-show="list.length > 0">
-				<div v-for="item in list" class="item">
-					<div class="img">
-						<img :src="item.path" />
-					</div>
-					<p class="path">{{item.path}}</p>
-					<p class="size">{{item.size}}</p>
+			<div class="work-list" v-show="list.length > 0">
+				<div class="list scroll">
+					<transition-group name="item" tag="p">
+						<div v-for="(item,index) in list" :key="item.path" class="item">
+							<div class="flex">
+								<div class="img">
+									<img :src="item.path" />
+								</div>
+								<div class="info">
+									<p class="path" :title="item.path">{{item.path}}</p>
+									<p class="size">{{item.size | sizeFilter}}</p>
+								</div>
+							</div>
+							<div class="remove" @click="removeListItem(index)"></div>
+						</div>
+					</transition-group>
+				</div>
+				<div class="btn-wrap">
+					<button @click="doCompress">压缩</button>
+					<button @click="list = []">清空</button>
 				</div>
 			</div>
 
-			<div id="dragArea" class="drag" v-show="list.length == 0">
+			
+
+			<div id="dragArea" class="drag-tip" v-show="list.length == 0">
 				<p>请将文件或文件夹拖动到窗口</p>
 			</div>
 

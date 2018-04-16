@@ -18,8 +18,8 @@ app.on('ready', () => {
     // 创建浏览器窗口。
     mainWindow = new BrowserWindow({
         frame: false,
-        width: 1400,
-        height: 600,
+        width: 800,
+        height: 500,
         resizable: false
     });
 
@@ -31,7 +31,7 @@ app.on('ready', () => {
     }));
 
     // 打开 DevTools.
-    mainWindow.webContents.openDevTools()
+    //mainWindow.webContents.openDevTools()
 
     // window关闭事件
     mainWindow.on('closed', () => {
@@ -62,11 +62,11 @@ app.on('activate', () => {
 
 var ipcMain = electron.ipcMain;
 
-//便利获取图片文件
+//遍历获取图片文件
 const { getImgList } = require('./assist');
 ipcMain.on('file-drop', (event, dropPaths) => {
     var imgList = getImgList(dropPaths);
-    event.sender.send('drop-imgs', imgList)
+    event.sender.send('drop-imgs', imgList);
 })
 
 //关闭/最小化窗口

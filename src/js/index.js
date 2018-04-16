@@ -1,5 +1,5 @@
 const { ipcRenderer } = require('electron');
-const { normalizePath, saveCompressConfig, getCompressConfig } = require('./../../assist');
+const { normalizePath, saveCompressConfig, getCompressConfig, imageCompressHandle } = require('./../../assist');
 
 const Vue = require('vue/dist/vue.js');
 
@@ -53,7 +53,9 @@ Vue.component('range', {
         },
         mousemoveHandler(e) {
             if (this.isMouseDown) {
+
                 var moveOffset = e.pageX - this.getOffsetLeft(this.$refs.elRange);
+
                 if (moveOffset <= 0) {
                     this.rangeValue = 0;
                     this.setThumbPos();
@@ -70,17 +72,22 @@ Vue.component('range', {
             }
         },
         setThumbPos() {
+            var isSettingShow = $(".setting").style.display != 'none' ? true : false;
+            if (!isSettingShow) {
+                $(".setting").style.display = 'flex'
+            }
 
-            //display为none，获取不到width
             var stepWidth = this.elRange.offsetWidth / this.rangeMax;
             var thumbWidth = this.elThumb.offsetWidth;
-            this.elThumb.style.left = this.rangeValue * stepWidth - thumbWidth / 2 + 'px'
+            this.elThumb.style.left = this.rangeValue * stepWidth - thumbWidth / 2 + 'px';
 
-            console.log(this.elRange.offsetWidth)
+            if (!isSettingShow) {
+                $(".setting").style.display = 'none'
+            }
         },
         getOffsetLeft(_el) {
-            var left = 0;
-            var offsetParent = _el;
+            var left = _el.offsetLeft;
+            var offsetParent = _el.offsetParent;
             while (offsetParent != null && offsetParent != document.body) {
                 left += offsetParent.offsetLeft;
                 offsetParent = offsetParent.offsetParent;
@@ -90,15 +97,10 @@ Vue.component('range', {
     }
 })
 
-
-
 var vm = new Vue({
     el: ".app",
     data: {
-        list: [{
-            path: "C:/Users/54657645/Desktop/151719604925.jpg",
-            size: 466426
-        }],
+        list: [],
         settingShow: false,
         savePath: '',
         size: 0,
@@ -124,6 +126,15 @@ var vm = new Vue({
             this.setLinePos()
         }
     },
+    filters: {
+        sizeFilter(size) {
+            var sizeTemp = size / 1024
+            if (sizeTemp < 1024) {
+                return sizeTemp.toFixed(2) + ' kb'
+            }
+            return (sizeTemp / 1024).toFixed(2) + ' mb'
+        }
+    },
     methods: {
         //设置范围选择的高亮线
         setLinePos() {
@@ -142,13 +153,12 @@ var vm = new Vue({
             this.settingShow = false;
             var setting = {
                 savePath: this.savePath,
-                size: this.size,
-                quality1: this.quality1,
-                quality2: this.quality2,
-                speed: this.speed
+                size: parseInt(this.size),
+                quality1: parseInt(this.quality1),
+                quality2: parseInt(this.quality2),
+                speed: parseInt(this.speed)
             }
             saveCompressConfig(setting)
-            //ipcRenderer.send('save-setting', setting)
         },
         //最小化窗口
         minWindow() {
@@ -161,6 +171,23 @@ var vm = new Vue({
         //打开目录选择面板
         openDialog() {
             ipcRenderer.send('select-directory')
+        },
+        //删除图片
+        removeListItem(index) {
+            this.list.splice(index, 1)
+        },
+        //执行压缩
+        doCompress() {
+            /* var pathList = [];
+            this.list.forEach(item=>{
+                pathList.push(item.path)
+            }); */
+            imageCompressHandle(pathList,this)
+            /* pathList.forEach((item, index) => {
+                imageCompressHandle(item, index, finishIndex => {
+                    this.list.splice(finishIndex, 1)
+                })
+            }); */
         }
     }
 })
@@ -188,7 +215,6 @@ _main.ondrop = (e) => {
 };
 ipcRenderer.on('drop-imgs', (event, arg) => {
     vm.list = arg;
-    console.log(arg[0])
 })
 
 
