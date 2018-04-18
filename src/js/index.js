@@ -1,7 +1,20 @@
 const { ipcRenderer } = require('electron');
-const { normalizePath, saveCompressConfig, getCompressConfig, imageCompressHandle } = require('./../../assist');
+const { normalizePath, saveCompressConfig, getCompressConfig, imageCompressHandle,errorLog } = require('./../../assist');
 
 const Vue = require('vue/dist/vue.js');
+
+
+window.onerror = function(errorMessage, scriptURI, lineNumber,columnNumber,errorObj) {
+    var info = `
+                "错误信息：" , ${errorMessage}\n\r
+                "出错文件：" , ${scriptURI}\n\r
+                "出错行号：" , ${lineNumber}\n\r
+                "出错列号：" , ${columnNumber}\n\r
+                "错误详情：" , ${errorObj}\n\r
+             ` 
+    errorLog(info)
+ }
+
 
 //范围选择组件
 Vue.component('range', {
@@ -100,8 +113,9 @@ Vue.component('range', {
 var vm = new Vue({
     el: ".app",
     data: {
-        list: [{path:'null',size:0},{path:'null',size:0},{path:'null',size:0},{path:'null',size:0},{path:'null',size:0},{path:'null',size:0}],
+        list: [],
         settingShow: false,
+        loadingShow: false,
         //存储路径
         savePath: '',
         //jpg设置
@@ -185,23 +199,34 @@ var vm = new Vue({
         removeListItem(index) {
             this.list.splice(index, 1)
         },
+        clearList(){
+            this.list =[];
+            this.loadingShow = false;
+        },
         //执行压缩
         doCompress() {
+            this.loadingShow = true;
+
             var pathList = [];
             this.list.forEach(item => {
                 pathList.push(item.path)
             });
+
+            var handleIndex = 0;
             pathList.forEach(imgPath => {
                 imageCompressHandle(imgPath, () => {
+                    handleIndex++;
+                    if(handleIndex == pathList.length){
+                        this.loadingShow = false;
+                    }
                     this.list = this.list.filter(item => {
-                        return item.path != imgPath
+                        return item.path != imgPath;
                     })
                 })
             });
         }
     }
 })
-
 
 
 //实现文件拖拽
@@ -225,6 +250,7 @@ _main.ondrop = (e) => {
 };
 ipcRenderer.on('drop-imgs', (event, arg) => {
     vm.list = arg;
+    vm.loadingShow = false;
 })
 
 

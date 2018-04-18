@@ -60,9 +60,9 @@ select:focus{box-shadow: 0 0 10px rgb(43, 149, 253);outline: 0}
 .setting .quality-range .range{position: absolute;top: 0;left: 0;}
 .setting .quality-range .line{position: absolute;top: 7px;height: 6px;background: rgb(43, 149, 253);}
 
-
 .fade-enter-active, .fade-leave-active {transition: opacity .3s}
 .fade-enter, .fade-leave-to {opacity: 0}
+
 
 /* 主容器 */
 .main{-webkit-app-region: no-drag;position: absolute;top: 30px;right: 0;bottom: 0;left: 0;padding: 10px;background: #fff;overflow: hidden;}
@@ -78,8 +78,9 @@ select:focus{box-shadow: 0 0 10px rgb(43, 149, 253);outline: 0}
 .drag-tip p{color: #888;font-size: 16px}
 
 /* 列表 */
-.work-list .residual{text-align: center;color: #888;padding-bottom: 10px;}
-.work-list .list{height: 400px;overflow-x: hidden;padding: 10px 0;}
+.work-list .residual{text-align: center;color: #888;padding-bottom: 10px;position: relative;}
+.work-list .wrap{height: 400px;position: relative;}
+.work-list .list{height: 100%;overflow-x: hidden;padding: 10px 0;position: relative;}
 .work-list .item{padding: 5px 0;border-bottom: dashed 1px rgba(0, 0, 0, 0.15);position: relative;}
 .work-list .list .item:last-child{border-bottom: none;}
 .work-list .item .flex{display: flex;align-items: center;transition: all 0.3s;}
@@ -95,3 +96,13 @@ select:focus{box-shadow: 0 0 10px rgb(43, 149, 253);outline: 0}
 
 .item-enter-active, .item-leave-active {transition: all 0.36s;}
 .item-enter, .item-leave-to {opacity: 0;transform: translateX(-800px);}
+
+/* loading */
+.loading{position: absolute;width: 100%;height: 100%;top: 0;left: 0;display: flex;justify-content: center;align-items: center;background: rgba(200, 200, 200, 0.6);}
+.loading>div{width: 120px;height: 120px;border: solid 10px #fff;position: relative;border-radius: 100%;animation: loading 0.8s linear infinite;}
+.loading>div .circle{position: absolute;top: 50%;transform: translateY(-50%);left: -17px;width: 24px;height: 24px;border-radius: 100%;background: rgb(43, 149, 253);}
+.loading>div .circle:last-child{background: rgb(255, 147, 183);left: auto;right: -17px;}
+@keyframes loading{
+    form{transform: rotate(0deg)}
+    to{transform: rotate(180deg)}
+}

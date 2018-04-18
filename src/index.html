@@ -85,8 +85,6 @@
 
 		<div class="main">
 
-
-
 			<div class="introduce">
 				<h1 :class="{'small':list.length != 0}">Image
 					<span>Compress</span>
@@ -94,33 +92,42 @@
 				<transition name="fade">
 					<p v-show="list.length == 0">Image Compress是一个图片压缩工具，使用electron构建而成，压缩算法基于imagemin，实现了无损压缩，支持文件拖拽、批量压缩，自定义存储位置和常用参数</p>
 				</transition>
-
 			</div>
 
 			<div class="work-list" v-show="list.length > 0">
 
 				<p class="residual">还有{{list.length}}个图片等待压缩</p>
-
-				<div class="list scroll">
-					<transition-group name="item" tag="p">
-						<div v-for="(item,index) in list" :key="item.path" class="item">
-							<div class="flex">
-								<div class="img">
-									<img :src="item.path" />
+				
+				<div class="wrap">
+					<div class="list scroll">
+						<transition-group name="item">
+							<div v-for="(item,index) in list" :key="item.path" class="item">
+								<div class="flex">
+									<div class="img">
+										<img :src="item.path" />
+									</div>
+									<div class="info">
+										<p class="path" :title="item.path">{{item.path}}</p>
+										<p class="size">{{item.size | sizeFilter}}</p>
+									</div>
 								</div>
-								<div class="info">
-									<p class="path" :title="item.path">{{item.path}}</p>
-									<p class="size">{{item.size | sizeFilter}}</p>
-								</div>
+								<div class="remove" @click="removeListItem(index)"></div>
 							</div>
-							<div class="remove" @click="removeListItem(index)"></div>
+						</transition-group>
+					</div>
+					<transition name="fade">
+						<div class="loading" v-show="loadingShow">
+							<div>
+								<div class="circle"></div>
+								<div class="circle"></div>
+							</div>
 						</div>
-					</transition-group>
+					</transition>
 				</div>
 				
 				<div class="btn-wrap">
 					<button @click="doCompress">压缩</button>
-					<button @click="list = []">清空</button>
+					<button @click="clearList">清空</button>
 				</div>
 			</div>
 

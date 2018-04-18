@@ -7,6 +7,12 @@ const imagemin = require('imagemin');
 const imageminPngquant = require('imagemin-pngquant');
 const imageminJpegRecompress = require('imagemin-jpeg-recompress');
 
+
+var errorLog = (err)=>{
+    fse.outputFile(getCompressConfig().savePath + '/image-compress-build/error.log', err)
+}
+exports.errorLog = errorLog;
+
 var getImgList = (paths) => {
     var imgList = [];
     var getImgs = (dropPaths) => {
@@ -129,7 +135,7 @@ function imageCompressHandle(imgPath, callback) {
     }).then(files => {
         callback()
     }).catch(err => {
-        fse.outputFile(pluginsConfig.savePath + '/image-compress-build/error.log', err)
+        errorLog(err)
     });
 
 }
