@@ -100,10 +100,19 @@ Vue.component('range', {
 var vm = new Vue({
     el: ".app",
     data: {
-        list: [],
+        list: [{path:'null',size:0},{path:'null',size:0},{path:'null',size:0},{path:'null',size:0},{path:'null',size:0},{path:'null',size:0}],
         settingShow: false,
+        //存储路径
         savePath: '',
-        size: 0,
+        //jpg设置
+        jpgQuality:'high',
+        jpgQualityOption:[
+            {label:"低",val:"low"},
+            { label:"中", val:"medium"},
+            {label:"高",val:"high"},
+            {label:"极高",val:"veryhigh"}
+        ],
+        //png设置
         quality1: 0,
         quality2: 0,
         speed: 0
@@ -111,7 +120,7 @@ var vm = new Vue({
     mounted() {
         var comressconfig = getCompressConfig();
         this.savePath = comressconfig.savePath;
-        this.size = comressconfig.plugins.imageminJpegoptim.size;
+        this.jpgQuality = comressconfig.plugins.imageminJpegRecompress.jpgQuality;
         this.quality1 = comressconfig.plugins.imageminPngquant.qualityMin;
         this.quality2 = comressconfig.plugins.imageminPngquant.qualityMax;
         this.speed = comressconfig.plugins.imageminPngquant.speed;
@@ -153,7 +162,7 @@ var vm = new Vue({
             this.settingShow = false;
             var setting = {
                 savePath: this.savePath,
-                size: parseInt(this.size),
+                jpgQuality: this.jpgQuality,
                 quality1: parseInt(this.quality1),
                 quality2: parseInt(this.quality2),
                 speed: parseInt(this.speed)
@@ -223,14 +232,6 @@ ipcRenderer.on('drop-imgs', (event, arg) => {
 ipcRenderer.on('directory-selected', (event, arg) => {
     vm.savePath = normalizePath(arg);
 })
-
-
-//实现图片左右对比效果
-var _compare = $(".compare");
-_compare.onmousemove = function (event) {
-    $(".separator").style.left = event.clientX - _compare.offsetLeft + 'px';
-    $(".img-compressed").style.width = event.clientX - _compare.offsetLeft + 'px';
-}
 
 //简易的jquery方法
 function $(selector) {

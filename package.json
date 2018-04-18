@@ -4,7 +4,8 @@
   "description": "cebest tools",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "packager": "electron-packager ./ Image-Compress --all --out ./OutApp --version 1.8.3 --overwrite --icon=./src/img/icon.png"
   },
   "keywords": [
     "electron"
@@ -12,12 +13,13 @@
   "author": "justyeh",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^1.8.3"
+    "electron": "^1.8.3",
+    "electron-packager": "^12.0.1"
   },
   "dependencies": {
     "fs-extra": "^5.0.0",
     "imagemin": "^5.3.1",
-    "imagemin-jpegoptim": "^5.2.0",
+    "imagemin-jpeg-recompress": "^5.1.0",
     "imagemin-pngquant": "^5.1.0",
     "vue": "^2.5.16"
   }

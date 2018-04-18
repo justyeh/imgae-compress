@@ -1,1 +1,1 @@
-{"savePath":"C:/Users/54657645/Desktop","plugins":{"imageminJpegoptim":{"size":500},"imageminPngquant":{"qualityMin":65,"qualityMax":80,"speed":1}}}
+{"savePath":"C:/Users/54657645/Desktop","plugins":{"imageminJpegRecompress":{"jpgQuality":"high"},"imageminPngquant":{"qualityMin":65,"qualityMax":80,"speed":3}}}

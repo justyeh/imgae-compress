@@ -5,7 +5,7 @@ var os = require('os');
 
 const imagemin = require('imagemin');
 const imageminPngquant = require('imagemin-pngquant');
-const imageminJpegoptim = require('imagemin-jpegoptim');
+const imageminJpegRecompress = require('imagemin-jpeg-recompress');
 
 var getImgList = (paths) => {
     var imgList = [];
@@ -23,7 +23,7 @@ var getImgList = (paths) => {
                 }
             } else {
                 var fileExtname = path.extname(pathNormalize).toLowerCase();
-                if (['.jpg', '.png', '.jepg'].indexOf(fileExtname) > -1) {
+                if (['.jpg', '.png'].indexOf(fileExtname) > -1) {
                     imgList.push({
                         path: pathNormalize,
                         size: pathInfo.size
@@ -66,8 +66,8 @@ function saveCompressConfig(setting) {
         var jsonStr = {
             "savePath": setting.savePath,
             "plugins": {
-                "imageminJpegoptim": {
-                    "size": setting.size
+                "imageminJpegRecompress": {
+                    "jpgQuality": setting.jpgQuality
                 },
                 "imageminPngquant": {
                     "qualityMin": qualityMin,
@@ -89,8 +89,8 @@ function getCompressConfig() {
         var defaultConfig = {
             "savePath": getDeaktopDir(),
             "plugins": {
-                "imageminJpegoptim": {
-                    "size": 500
+                "imageminJpegRecompress": {
+                    "jpgQuality": 'high'
                 },
                 "imageminPngquant": {
                     "qualityMin": 65,
@@ -116,8 +116,14 @@ function imageCompressHandle(imgPath, callback) {
                 quality: pluginsConfig.plugins.imageminPngquant.qualityMin + '-' + pluginsConfig.plugins.imageminPngquant.qualityMax,
                 speed: pluginsConfig.plugins.imageminPngquant.speed
             }),
-            imageminJpegoptim({
-                size: pluginsConfig.plugins.imageminJpegoptim.size
+            imageminJpegRecompress({
+                accurate: true,//高精度模式
+                quality: pluginsConfig.plugins.imageminJpegRecompress.jpgQuality,//图像质量:low, medium, high and veryhigh;
+                method: "smallfry",//网格优化:mpe, ssim, ms-ssim and smallfry;
+                min: 60,//最低质量
+                loops: 0,//循环尝试次数, 默认为6;
+                progressive: false,//基线优化
+                subsample: "default"//子采样:default, disable;
             })
         ]
     }).then(files => {

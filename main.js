@@ -18,8 +18,8 @@ app.on('ready', () => {
     // 创建浏览器窗口。
     mainWindow = new BrowserWindow({
         frame: false,
-        width: 800,
-        height: 500,
+        width: 400,
+        height: 600,
         resizable: false
     });
 
@@ -91,9 +91,4 @@ ipcMain.on('select-directory', (event, arg) => {
             event.sender.send('directory-selected', path.normalize(directory[0]))
         }
     });
-})
-
-//保存设置到文件
-ipcMain.on('save-setting', (event, arg) => {
-    
 })
