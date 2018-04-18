@@ -178,16 +178,17 @@ var vm = new Vue({
         },
         //执行压缩
         doCompress() {
-            /* var pathList = [];
-            this.list.forEach(item=>{
+            var pathList = [];
+            this.list.forEach(item => {
                 pathList.push(item.path)
-            }); */
-            imageCompressHandle(pathList,this)
-            /* pathList.forEach((item, index) => {
-                imageCompressHandle(item, index, finishIndex => {
-                    this.list.splice(finishIndex, 1)
+            });
+            pathList.forEach(imgPath => {
+                imageCompressHandle(imgPath, () => {
+                    this.list = this.list.filter(item => {
+                        return item.path != imgPath
+                    })
                 })
-            }); */
+            });
         }
     }
 })

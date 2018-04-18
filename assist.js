@@ -7,7 +7,6 @@ const imagemin = require('imagemin');
 const imageminPngquant = require('imagemin-pngquant');
 const imageminJpegoptim = require('imagemin-jpegoptim');
 
-
 var getImgList = (paths) => {
     var imgList = [];
     var getImgs = (dropPaths) => {
@@ -106,25 +105,26 @@ function getCompressConfig() {
 }
 exports.getCompressConfig = getCompressConfig;
 
-function imageCompressHandle(pathList, vm) {
-    var pluginsConfig = getCompressConfig();
-    pathList.forEach((imgPath,index) => {
-        imagemin([imgPath], pluginsConfig.savePath + '/image-compress-build/', {
-            plugins: [
-                imageminPngquant({
-                    quality: pluginsConfig.plugins.imageminPngquant.qualityMin + '-' + pluginsConfig.plugins.imageminPngquant.qualityMax,
-                    speed: pluginsConfig.plugins.imageminPngquant.speed
-                }),
-                imageminJpegoptim({
-                    size: pluginsConfig.plugins.imageminJpegoptim.size
-                })
-            ]
-        }).then(files => {
-            vm.list.splice(index,1)
-        }).catch(err => {
-            fse.outputFile(pluginsConfig.savePath + '/image-compress-build/error.log', err)
-        });
-    })
+function imageCompressHandle(imgPath, callback) {
+    var pluginsConfig = null;
+    if(!pluginsConfig){
+        pluginsConfig = getCompressConfig();
+    }
+    imagemin([imgPath], pluginsConfig.savePath + '/image-compress-build/', {
+        plugins: [
+            imageminPngquant({
+                quality: pluginsConfig.plugins.imageminPngquant.qualityMin + '-' + pluginsConfig.plugins.imageminPngquant.qualityMax,
+                speed: pluginsConfig.plugins.imageminPngquant.speed
+            }),
+            imageminJpegoptim({
+                size: pluginsConfig.plugins.imageminJpegoptim.size
+            })
+        ]
+    }).then(files => {
+        callback()
+    }).catch(err => {
+        fse.outputFile(pluginsConfig.savePath + '/image-compress-build/error.log', err)
+    });
 
 }
 exports.imageCompressHandle = imageCompressHandle;
