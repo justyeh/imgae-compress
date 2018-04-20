@@ -17,7 +17,7 @@ var getImgList = (paths) => {
     var imgList = [];
     var getImgs = (dropPaths) => {
         dropPaths.forEach(pathStr => {
-            var pathNormalize = path.normalize(pathStr);
+            var pathNormalize = normalizePath(pathStr);
             var pathInfo = fs.lstatSync(pathNormalize);
             if (pathInfo.isDirectory()) {
                 var dirPathList = fs.readdirSync(pathNormalize);
@@ -111,12 +111,12 @@ function getCompressConfig() {
 }
 exports.getCompressConfig = getCompressConfig;
 
+var pluginsConfig = null;
 function imageCompressHandle(imgPath, callback) {
-    var pluginsConfig = null;
     if(!pluginsConfig){
         pluginsConfig = getCompressConfig();
     }
-    imagemin([imgPath], pluginsConfig.savePath + '/image-compress-build/', {
+    imagemin([imgPath], path.join(pluginsConfig.savePath,'image-compress-build') , {
         plugins: [
             imageminPngquant({
                 quality: pluginsConfig.plugins.imageminPngquant.qualityMin + '-' + pluginsConfig.plugins.imageminPngquant.qualityMax,
@@ -135,6 +135,7 @@ function imageCompressHandle(imgPath, callback) {
     }).then(files => {
         callback()
     }).catch(err => {
+        console.log(err)
         errorLog(err)
     });
 

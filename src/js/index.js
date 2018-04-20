@@ -1,7 +1,7 @@
 const { ipcRenderer } = require('electron');
 const { normalizePath, saveCompressConfig, getCompressConfig, imageCompressHandle,errorLog } = require('./../../assist');
 
-const Vue = require('vue/dist/vue.js');
+const Vue = require('vue/dist/vue.min.js');
 
 
 window.onerror = function(errorMessage, scriptURI, lineNumber,columnNumber,errorObj) {
@@ -13,7 +13,7 @@ window.onerror = function(errorMessage, scriptURI, lineNumber,columnNumber,error
                 "错误详情：" , ${errorObj}\n\r
              ` 
     errorLog(info)
- }
+}
 
 
 //范围选择组件

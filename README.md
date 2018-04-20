@@ -27,3 +27,21 @@
 + imagemin-jpegoptim
 + imagemin-pngquant
 + vue
+
+
+## 构建
+
+-electron-packager
+
+文件夹，可以使用
+
+-electron-builder 
+
+安装包，有bug
+
+Error: Error in file: C:/Users/54657645/Desktop/images/1.jpg
+spawn C:\Users\54657645\Desktop\imgae-compress\dist\win-unpacked\resources\app.asar\node_modules\jpeg-recompress-bin\vendor\jpeg-recompress.exe ENOENT
+
+-windows-installer
+
+垃圾

@@ -1,28 +1,37 @@
 {
-  "name": "cebest",
-  "version": "1.0.0",
-  "description": "cebest tools",
-  "main": "main.js",
-  "scripts": {
-    "start": "electron .",
-    "packageWin": "electron-packager ./ Image-Compress --platform=win32 --arch=x64 --icon=./src/img/icon.ico --out=./dist --version 1.8.3 --overwrite"
-  },
-  "keywords": [
-    "electron"
-  ],
-  "author": "justyeh",
-  "license": "ISC",
-  "devDependencies": {
-    "electron": "^1.8.3",
-    "electron-packager": "^12.0.1"
-  },
-  "dependencies": {
-    "fs-extra": "^5.0.0",
-    "imagemin": "^5.3.1",
-    "imagemin-jpeg-recompress": "^5.1.0",
-    "imagemin-pngquant": "^5.1.0",
-    "vue": "^2.5.16"
-  }
+	"name": "imagecompress",
+	"version": "1.0.0",
+	"description": "a image compress tool build with electron",
+	"main": "main.js",
+	"scripts": {
+		"start": "electron .",
+		"packager": "electron-packager . Image-Compress --platform=win32 --arch=x64 --icon=./src/img/icon.ico --out=./dist/electron-packager",
+		"builder": "electron-builder --win --x64"
+	},
+	"keywords": [
+		"electron"
+	],
+	"author": "justyeh",
+	"license": "ISC",
+	"devDependencies": {
+		"electron": "^1.8.3",
+		"electron-packager": "^12.0.1"
+	},
+	"dependencies": {
+		"fs-extra": "^5.0.0",
+		"imagemin": "^5.3.1",
+		"imagemin-jpeg-recompress": "^5.1.0",
+		"imagemin-pngquant": "^5.1.0",
+		"vue": "^2.5.16"
+	},
+	"build": {
+		"appId": "com.justeyh.compress",
+		"directories": {
+			"output": "./dist/electron-builder/"
+		},
+		"productName": "Image-Compress",
+		"win": {
+			"icon": "./build/icon.ico"
+		}
+	}
 }
-
-
