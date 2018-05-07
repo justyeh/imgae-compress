@@ -17,19 +17,19 @@
 - [x]设置文件的读取与保存
 - [x]完成设置页面功能
 - [x]文件压缩处理
-- [ ]构建为exe安装包
+- [x]构建为exe安装包
 
-## dependencies
+## screenshot
 
-+ electron
-+ fs-extra
-+ imagemin
-+ imagemin-jpegoptim
-+ imagemin-pngquant
-+ vue
+<img width="200" src="https://github.com/justyeh/imgae-compress/blob/master/publish/screenshot/img1.jpg">
+<img width="200" src="https://github.com/justyeh/imgae-compress/blob/master/publish/screenshot/img2.jpg">
+<img width="200" src="https://github.com/justyeh/imgae-compress/blob/master/publish/screenshot/GIF.gif">
+
 
 
 ## 构建
+
+目前在构建上有需要改善的地方，目前精力有限，还没有找到好的解决办法，若果有好的建议，请联系我！
 
 -electron-packager
 
@@ -44,4 +44,13 @@ spawn C:\Users\54657645\Desktop\imgae-compress\dist\win-unpacked\resources\app.a
 
 -windows-installer
 
-垃圾
+完全走不通
+
+## dependencies
+
++ electron
++ fs-extra
++ imagemin
++ imagemin-jpegoptim
++ imagemin-pngquant
++ vue
