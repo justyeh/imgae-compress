@@ -112,11 +112,11 @@ function getCompressConfig() {
 exports.getCompressConfig = getCompressConfig;
 
 var pluginsConfig = null;
-function imageCompressHandle(imgPath, callback) {
+function imageCompressHandle(imgPathList, callback) {
     if(!pluginsConfig){
         pluginsConfig = getCompressConfig();
     }
-    imagemin([imgPath], path.join(pluginsConfig.savePath,'image-compress-build') , {
+    imagemin(imgPathList, path.join(pluginsConfig.savePath,'image-compress-build') , {
         plugins: [
             imageminPngquant({
                 quality: pluginsConfig.plugins.imageminPngquant.qualityMin + '-' + pluginsConfig.plugins.imageminPngquant.qualityMax,
@@ -135,7 +135,6 @@ function imageCompressHandle(imgPath, callback) {
     }).then(files => {
         callback()
     }).catch(err => {
-        console.log(err)
         errorLog(err)
     });
 

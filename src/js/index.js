@@ -1,17 +1,17 @@
 const { ipcRenderer } = require('electron');
-const { normalizePath, saveCompressConfig, getCompressConfig, imageCompressHandle,errorLog } = require('./../../assist');
+const { normalizePath, saveCompressConfig, getCompressConfig, imageCompressHandle, errorLog } = require('./../../assist');
 
 const Vue = require('vue/dist/vue.min.js');
 
 
-window.onerror = function(errorMessage, scriptURI, lineNumber,columnNumber,errorObj) {
+window.onerror = function (errorMessage, scriptURI, lineNumber, columnNumber, errorObj) {
     var info = `
                 "错误信息：" , ${errorMessage}\n\r
                 "出错文件：" , ${scriptURI}\n\r
                 "出错行号：" , ${lineNumber}\n\r
                 "出错列号：" , ${columnNumber}\n\r
                 "错误详情：" , ${errorObj}\n\r
-             ` 
+             `
     errorLog(info)
 }
 
@@ -119,17 +119,23 @@ var vm = new Vue({
         //存储路径
         savePath: '',
         //jpg设置
-        jpgQuality:'high',
-        jpgQualityOption:[
-            {label:"低",val:"low"},
-            { label:"中", val:"medium"},
-            {label:"高",val:"high"},
-            {label:"极高",val:"veryhigh"}
+        jpgQuality: 'high',
+        jpgQualityOption: [
+            { label: "低", val: "low" },
+            { label: "中", val: "medium" },
+            { label: "高", val: "high" },
+            { label: "极高", val: "veryhigh" }
         ],
         //png设置
         quality1: 0,
         quality2: 0,
-        speed: 0
+        speed: 0,
+
+        //压缩任务队列相关标记
+        pathList: [],
+        queueLength: 0,
+        queueIndex: 0,
+        singleTaskSize: 1
     },
     mounted() {
         var comressconfig = getCompressConfig();
@@ -199,31 +205,41 @@ var vm = new Vue({
         removeListItem(index) {
             this.list.splice(index, 1)
         },
-        clearList(){
-            this.list =[];
+        clearList() {
+            this.list = [];
             this.loadingShow = false;
         },
         //执行压缩
         doCompress() {
+            if (this.loadingShow) {
+                return;
+            }
+
             this.loadingShow = true;
-
-            var pathList = [];
             this.list.forEach(item => {
-                pathList.push(item.path)
+                this.pathList.push(item.path)
             });
 
-            var handleIndex = 0;
-            pathList.forEach(imgPath => {
-                imageCompressHandle(imgPath, () => {
-                    handleIndex++;
-                    if(handleIndex == pathList.length){
-                        this.loadingShow = false;
-                    }
-                    this.list = this.list.filter(item => {
-                        return item.path != imgPath;
-                    })
-                })
-            });
+            this.queueLength = Math.ceil(this.pathList.length / this.singleTaskSize);
+            this.queueIndex = 0;
+            this.compressFn()
+        },
+        compressFn() {
+            var taskThis = this.getTask(this.queueIndex);
+            imageCompressHandle(taskThis, () => {
+                if (this.queueIndex < this.queueLength - 1) {
+                    this.queueIndex = this.queueIndex + 1;
+                    this.list.splice(0, taskThis.length)
+                    this.compressFn();
+                } else {
+                    this.loadingShow = false;
+                    this.clearList();
+                    return
+                }
+            })
+        },
+        getTask() {
+            return this.pathList.slice(this.queueIndex * this.singleTaskSize, (this.queueIndex + 1) * this.singleTaskSize);
         }
     }
 })
